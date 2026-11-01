@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "OneSATTestUsingSearch",
+      "request": "launch",
+      "mainClass": "br.unb.cic.infoknow.onesat.OneSATTestUsingSearch",
+      "projectName": "OneSAT",
+      "args": [
+        "C:/temp/OneSat/satisfiable_conjunctions.txt",
+        "true"
+      ]
+    }
+  ]
+}
