@@ -14,7 +14,7 @@ public record Formula(Integer positive, Integer negative) {
         return ((this.positive & other.negative) + (this.negative & other.positive)) == 0;
     }
 
-    public boolean implies(Formula other) {
+    public boolean entails(Formula other) {
         Integer newPositive = this.positive & other.positive;
         Integer newNegative = this.negative & other.negative;
         return other.positive.equals(newPositive) && other.negative.equals(newNegative);

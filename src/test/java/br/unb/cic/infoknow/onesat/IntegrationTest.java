@@ -74,10 +74,10 @@ public class IntegrationTest {
         Formula consequent3 = FormulaParser.parse(f4, ranking);
         Formula consequent4 = FormulaParser.parse(f5, ranking);
 
-        assert(antecedent.implies(consequent1));
-        assert(antecedent.implies(consequent2));
-        assert(!antecedent.implies(consequent3));
-        assert(!antecedent.implies(consequent4));
+        assert(antecedent.entails(consequent1));
+        assert(antecedent.entails(consequent2));
+        assert(!antecedent.entails(consequent3));
+        assert(!antecedent.entails(consequent4));
     }         
 
 }
