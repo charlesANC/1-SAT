@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OneSATTestUsingSearch {
 
-    private final static String andOperator = "^";
+    private final static String andOperator = "&";
     private final static String negativeOperator = "~";    
 
     public static void main(String[] args) {
@@ -20,34 +20,34 @@ public class OneSATTestUsingSearch {
             return;
         }
 
+        List<String> lines = readFileInList(args[0]);        
+        boolean satisfiable = args[1].equals("true");        
+
         Long start = System.currentTimeMillis();
 
-        List<HashSet<Literal>> formulas = readLiteralsFromFile(args[0]);
-        boolean satisfiable = args[1].equals("true");
+        for(int i = 0; i < 10; i++) {        
 
-        Long time = System.currentTimeMillis();
+            List<HashSet<Literal>> formulas = stringToLIstOfLiterals(lines);
 
-        for(int j = 0; j < 10000; j++) {
-            for (int i = 0; i < formulas.size(); i++) {
-                HashSet<Literal> f = formulas.get(i);
-                if (Literal.isSatisfiable(f) != satisfiable) {
-                    System.out.println("Test failed for formula: " + i);
-                    return ;
+            
+            for (int j = 0; j < 1000; j++ ) {
+                for (int k = 0; k < formulas.size(); k++) {
+                    HashSet<Literal> f = formulas.get(k);
+                    if (Literal.isSatisfiable(f) != satisfiable) {
+                        System.out.println("Test failed for formula: " + k);
+                        return ;
+                    }
                 }
             }
         }
 
-
-        time = System.currentTimeMillis() - time;
         start = System.currentTimeMillis() - start;
 
         System.out.println("All tests passed!");
         System.out.println("Total time taken: " + start + " ms");
-        System.out.println("Time taken: " + time + " ms");
     }
 
-    private static List<HashSet<Literal>> readLiteralsFromFile(String fileName) {
-        List<String> lines = readFileInList(fileName);
+    private static List<HashSet<Literal>> stringToLIstOfLiterals(List<String> lines) {
         List<HashSet<Literal>> formulas = new ArrayList<>();
         for (String line : lines) {
             formulas.add(LiteralParser.parse(line, andOperator, negativeOperator));

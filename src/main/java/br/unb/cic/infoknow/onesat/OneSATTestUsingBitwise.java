@@ -11,7 +11,7 @@ import java.util.List;
 public class OneSATTestUsingBitwise {
 
     private final static String alphabet = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
-    private final static String andOperator = "^";
+    private final static String andOperator = "&";
     private final static String negativeOperator = "~";    
 
     public static void main(String[] args) {
@@ -21,36 +21,37 @@ public class OneSATTestUsingBitwise {
             return;
         }
 
-        Long start = System.currentTimeMillis();
+        List<String> lines = readFileInList(args[0]);
+        boolean satisfiable = args[1].equals("true");        
 
         HashSet<String> alphabetSet = AlphabetExtractor.createOrdering(alphabet, ",");
-        Ranking ranking = new Ranking(alphabetSet, andOperator, negativeOperator);        
+        Ranking ranking = new Ranking(alphabetSet, andOperator, negativeOperator);                
 
-        List<Formula> formulas = readFormulasFromFile(args[0], ranking);
-        boolean satisfiable = args[1].equals("true");
+        Long start = System.currentTimeMillis();
 
-        Long time = System.currentTimeMillis();
+        for(int i = 0; i < 10; i++) {        
+            List<HashSet<Literal>> listOfLiterals = readLiteralsFromFile(lines);
+            List<Formula> formulas = stringsToFormulas(listOfLiterals, ranking);
 
-        for(int j = 0; j < 10000; j++) {        
-            for (int i = 0; i < formulas.size(); i++) {
-                Formula f = formulas.get(i);
-                if (f.isSatisfiable() != satisfiable) {
-                    System.out.println("Test failed for formula: " + i);
-                    return ;
+
+            for(int j = 0; j < 1000; j++) {        
+                for (int k = 0; k < formulas.size(); k++) {
+                    Formula f = formulas.get(k);
+                    if (f.isSatisfiable() != satisfiable) {
+                        System.out.println("Test failed for formula: " + k);
+                        return ;
+                    }
                 }
             }
         }
 
-        time = System.currentTimeMillis() - time;
         start = System.currentTimeMillis() - start;
 
         System.out.println("All tests passed!");
         System.out.println("Total time taken: " + start + " ms");
-        System.out.println("Time taken: " + time + " ms");
     }
 
-    private static List<Formula> readFormulasFromFile(String fileName, Ranking ranking) {
-        List<HashSet<Literal>> formulas = readLiteralsFromFile(fileName);
+    private static List<Formula> stringsToFormulas(List<HashSet<Literal>> formulas, Ranking ranking) {
         List<Formula> formulasList = new ArrayList<>();
         for (HashSet<Literal> f : formulas) {
             formulasList.add(FormulaParser.parse(f, ranking));
@@ -58,8 +59,7 @@ public class OneSATTestUsingBitwise {
         return formulasList;
     }
 
-    private static List<HashSet<Literal>> readLiteralsFromFile(String fileName) {
-        List<String> lines = readFileInList(fileName);
+    private static List<HashSet<Literal>> readLiteralsFromFile(List<String> lines) {
         List<HashSet<Literal>> formulas = new ArrayList<>();
         for (String line : lines) {
             formulas.add(LiteralParser.parse(line, andOperator, negativeOperator));
